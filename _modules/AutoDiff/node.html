@@ -1,0 +1,977 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+
+    <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
+        <title>AutoDiff.node - AutoDiff documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">AutoDiff  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">AutoDiff  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for AutoDiff.node</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="Node"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node">[docs]</a><span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;This is a class that implements the Dual numbers and dunder methods to overload </span>
+<span class="sd">    built-in operators including negation, addition, subtraction, multiplication, true</span>
+<span class="sd">    division, and power. The class also overloads numpy operators including square root,</span>
+<span class="sd">    exponential, logarithm, sine, cosine, and tangent. Reflective operations are also </span>
+<span class="sd">    included.</span>
+
+<span class="sd">    :param value: The value of the Node, it can be an interger or float or a 1D numpy array for 1D problem, or a multi-dimensional numpy array for multi-dimensional problem</span>
+<span class="sd">    :type value: integer or float or numpy array</span>
+
+<span class="sd">    :param derivative: The derivative of the Node, defaults to 1. It can be an interger or float or a 1D numpy array for 1D problem, or a multi-dimensional numpy array for multi-dimensional problem</span>
+<span class="sd">    :type derivative: integer or float or numpy array</span>
+
+<span class="sd">    :ivar val: The value of the Node, it can be an interger or float or a 1D numpy array for 1D problem, or a multi-dimensional numpy array for multi-dimensional problem</span>
+<span class="sd">    :vartype val: integer or float or numpy array</span>
+
+<span class="sd">    :ivar der: The derivative of the Node, defaults to 1. It can be an interger or float or a 1D numpy array for 1D problem, or a multi-dimensional numpy array for multi-dimensional problem</span>
+<span class="sd">    :vartype der: integer or float or numpy array</span>
+
+<span class="sd">    :ivar parent: A list of parent Nodes of the current Node</span>
+<span class="sd">    :vartype parent: list</span>
+
+<span class="sd">    :ivar op: A list of strings representing operations</span>
+<span class="sd">    :vartype op: list</span>
+
+<span class="sd">    :ivar v_index: An integer used to track variable index in visualization</span>
+<span class="sd">    :vartype v_index: integer</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">    &gt;&gt;&gt; x1.val</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; x1.der</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; x1.parent</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; x1.op</span>
+<span class="sd">    []</span>
+<span class="sd">    &gt;&gt;&gt; x1.v_index</span>
+<span class="sd">    &#39;v1&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">_supported_types</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+    <span class="n">v_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">derivative</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">der</span> <span class="o">=</span> <span class="n">derivative</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">v_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_index</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;v</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">v_index</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="Node.__str__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print useful information for users.</span>
+
+<span class="sd">        :return: a string containing useful information of the Node object.</span>
+<span class="sd">        :rtype: string</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; print(x1)</span>
+<span class="sd">        Node: vindex=v1, val=5, der=1, parent=[], and op=[].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Node: vindex=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">v_index</span><span class="si">}</span><span class="s1">, val=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="si">}</span><span class="s1">, der=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">der</span><span class="si">}</span><span class="s1">, parent=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="si">}</span><span class="s1">, and op=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="si">}</span><span class="s1">.&#39;</span></div>
+
+<div class="viewcode-block" id="Node.__repr__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print useful information for developers.</span>
+
+<span class="sd">        :return: a string containing useful information of the Node object.</span>
+<span class="sd">        :rtype: string</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x1</span>
+<span class="sd">        A Node object with index of v1, value of 5, derivative of 1, parent of [], and operator of [].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;A Node object with index of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">v_index</span><span class="si">}</span><span class="s1">, value of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="si">}</span><span class="s1">, derivative of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">der</span><span class="si">}</span><span class="s1">, parent of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="si">}</span><span class="s1">, and operator of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="si">}</span><span class="s1">.&#39;</span></div>
+
+<div class="viewcode-block" id="Node.update_node"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.update_node">[docs]</a>    <span class="k">def</span> <span class="nf">update_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update a list of parent Nodes of the current Node with their operations.</span>
+
+<span class="sd">        :param parent: A list of parent Nodes of the current Node</span>
+<span class="sd">        :type parent: list</span>
+<span class="sd">        :param op: A list of strings representing operations</span>
+<span class="sd">        :type op: list</span>
+<span class="sd">        </span>
+<span class="sd">        :return: the current Node with parents and operations updated</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; parent = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x1.update_node([parent], [&#39;+&#39;])</span>
+<span class="sd">        A Node object with index of v2, value of 5, derivative of 1, parent of [A Node object with index of v3, value of 3, derivative of 1, parent of [], and operator of [].], and operator of [&#39;+&#39;].</span>
+<span class="sd">        &gt;&gt;&gt; x1.parent</span>
+<span class="sd">        [A Node object with index of v3, value of 3, derivative of 1, parent of [], and operator of [].]</span>
+<span class="sd">        &gt;&gt;&gt; x1.op</span>
+<span class="sd">        [&#39;+&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">op</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Node.__neg__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__neg__">[docs]</a>    <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in negation operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after negating of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = -x1</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v26, val=-5, der=-1, parent=[A Node object with index of v25, value of 5, derivative of 1, parent of [], and operator of [].], and op=[&#39;-1*&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;-1*&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.__add__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__add__">[docs]</a>    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in addition operator for handling Dual numbers in the Node class</span>
+<span class="sd">        and returns a new Node object with value and derivative updated. The addition of a Node object </span>
+<span class="sd">        with integers or floats is also supported.</span>
+
+<span class="sd">        :param other: The item to be added to the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+<span class="sd">        </span>
+<span class="sd">        :return: A Node object after addition, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x3 = x1 + x2</span>
+<span class="sd">        &gt;&gt;&gt; print(x3)</span>
+<span class="sd">        Node: vindex=v29, val=8, der=2, parent=[A Node object with index of v27, value of 5, derivative of 1, parent of [], and operator of []., A Node object with index of v28, value of 3, derivative of 1, parent of [], and operator of [].], and op=[&#39;+&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">der</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for addition&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">+</span> <span class="n">other</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.__sub__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__sub__">[docs]</a>    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in subtraction operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated. The subtraction of a Node object </span>
+<span class="sd">        with integers or floats is also supported.</span>
+
+<span class="sd">        :param other: The item to be subtracted from the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+<span class="sd">        </span>
+<span class="sd">        :return: A Node object after subtraction, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(3.0)</span>
+<span class="sd">        &gt;&gt;&gt; x3 = x1 - x2</span>
+<span class="sd">        &gt;&gt;&gt; print(x3)</span>
+<span class="sd">        Node: vindex=v32, val=2.0, der=0, parent=[A Node object with index of v30, value of 5, derivative of 1, parent of [], and operator of []., A Node object with index of v31, value of 3.0, derivative of 1, parent of [], and operator of [].], and op=[&#39;-&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">der</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for subtraction&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">-</span> <span class="n">other</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.__mul__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__mul__">[docs]</a>    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in multiplication operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated. The multiplication of a Node object </span>
+<span class="sd">        with integers or floats is also supported.</span>
+
+<span class="sd">        :param other: The item to multiply the current Node object by.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+<span class="sd">       </span>
+<span class="sd">        :return: A Node object after multiplication, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x3 = x1 * x2</span>
+<span class="sd">        &gt;&gt;&gt; print(x3)</span>
+<span class="sd">        Node: vindex=v35, val=15, der=8, parent=[A Node object with index of v33, value of 5, derivative of 1, parent of [], and operator of []., A Node object with index of v34, value of 3, derivative of 1, parent of [], and operator of [].], and op=[&#39;*&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">der</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for multiplication&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">*</span> <span class="n">other</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span> <span class="o">*</span> <span class="n">other</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Node.__truediv__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__truediv__">[docs]</a>    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in division operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated. The division of a Node object </span>
+<span class="sd">        with integers or floats is also supported.</span>
+
+<span class="sd">        :param other: The item to divide the current Node object by.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+<span class="sd">        :raises ZeroDivisionError: Division by zero.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: A Node object after subtraction, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(2.5)</span>
+<span class="sd">        &gt;&gt;&gt; x3 = x1 / x2</span>
+<span class="sd">        &gt;&gt;&gt; print(x3)</span>
+<span class="sd">        Node: vindex=v38, val=2.0, der=-0.4, parent=[A Node object with index of v36, value of 5, derivative of 1, parent of [], and operator of []., A Node object with index of v37, value of 2.5, derivative of 1, parent of [], and operator of [].], and op=[&#39;/&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s1">&#39;Division by zero&#39;</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">/</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">der</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">der</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">/</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span><span class="o">**</span><span class="mi">2</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for division&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">other</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span><span class="s1">&#39;Division by zero&#39;</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">/</span> <span class="n">other</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span> <span class="o">/</span> <span class="n">other</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.sqrt"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.sqrt">[docs]</a>    <span class="k">def</span> <span class="nf">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy square root operator for handling Dual numbers in the Node class</span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after taking the square root of the current Node, with value and derivative updated.</span>
+<span class="sd">        :raises: ValueError: Cannot take square root of negative number.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(16)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.sqrt(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v40, val=4.0, der=0.125, parent=[A Node object with index of v39, value of 16, derivative of 1, parent of [], and operator of [].], and op=[&#39;sqrt()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot take square root of negative number.&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;sqrt()&#39;</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Node.logistic"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.logistic">[docs]</a>    <span class="k">def</span> <span class="nf">logistic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implements the standard logistic operator for handling Nodes in the forward pass</span>
+<span class="sd">        and returns a new Node object with value and parent updated.</span>
+
+<span class="sd">        :return: An Node object after taking the standard logistic of the current Node, with value and parent updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = x1.logistic()</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v42, val=0.9933071490757153, der=0.006648056670790156, parent=[A Node object with index of v41, value of 5, derivative of 1, parent of [], and operator of [].], and op=[&#39;logistic()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">))</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;logistic()&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.log"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy logarithm operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after taking the logarithm of the current Node (default is natural logarithm, but user may also pass in a custom base), with value and derivative updated.</span>
+<span class="sd">        :raises: ValueError: Cannot take logarithm of non positive number.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(np.e)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.log(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v44, val=1.0, der=0.36787944117144233, parent=[A Node object with index of v43, value of 2.718281828459045, derivative of 1, parent of [], and operator of [].], and op=[&#39;log()&#39;].</span>
+<span class="sd">        &gt;&gt;&gt; x3 = x1.log(2)</span>
+<span class="sd">        &gt;&gt;&gt; print(x3)</span>
+<span class="sd">        Node: vindex=v45, val=1.4426950408889634, der=0.530737845423043, parent=[A Node object with index of v43, value of 2.718281828459045, derivative of 1, parent of [], and operator of [].], and op=[&#39;log2()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot take the log of a negative number.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">base</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;log()&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;log</span><span class="si">{</span><span class="n">base</span><span class="si">}</span><span class="s1">()&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.__pow__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__pow__">[docs]</a>    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in power operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated. Raising the Node object </span>
+<span class="sd">        to the power of some integer or float is also supported.</span>
+
+<span class="sd">        :param other: The item to raise the power of the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+<span class="sd">        </span>
+<span class="sd">        :return: A Node object after take the power, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = x1 ** 2.0</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v47, val=9.0, der=6.0, parent=[A Node object with index of v46, value of 3, derivative of 1, parent of [], and operator of [].], and op=[&#39;pow&#39;, 2.0].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;here!!&#39;</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">**</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">**</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">val</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">**</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">der</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pow&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for power&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">**</span> <span class="n">other</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="n">other</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">**</span> <span class="p">(</span><span class="n">other</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;pow&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.exp"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.exp">[docs]</a>    <span class="k">def</span> <span class="nf">exp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy exponential operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after taking the exponential of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x1 = Node(1)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.exp(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v49, val=2.718281828459045, der=2.718281828459045, parent=[A Node object with index of v48, value of 1, derivative of 1, parent of [], and operator of [].], and op=[&#39;exp()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;exp()&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.sin"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.sin">[docs]</a>    <span class="k">def</span> <span class="nf">sin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy sine operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after taking the sine of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.sin(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v51, val=-0.9589242746631385, der=0.2836621854632263, parent=[A Node object with index of v50, value of 5, derivative of 1, parent of [], and operator of [].], and op=[&#39;sin()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;sin()&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.cos"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.cos">[docs]</a>    <span class="k">def</span> <span class="nf">cos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy cosine operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after taking the cosine of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(np.pi/2)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.cos(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v53, val=6.123233995736766e-17, der=-1.0, parent=[A Node object with index of v52, value of 1.5707963267948966, derivative of 1, parent of [], and operator of [].], and op=[&#39;cos()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;cos()&#39;</span><span class="p">])</span></div>
+        
+<div class="viewcode-block" id="Node.tan"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.tan">[docs]</a>    <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Overloads the numpy tangent operator for handling Dual numbers in the Node class</span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :raises ValueError: Cannot take tangent of :math:`\pi/2 + n \cdot \pi`, with n being some integer</span>
+
+<span class="sd">        :return: A Node object after taking the tangent of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.tan(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v55, val=-3.380515006246585, der=12.427881707458349, parent=[A Node object with index of v54, value of 5, derivative of 1, parent of [], and operator of [].], and op=[&#39;tan()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot take tangent of pi/2 + n * pi, with n being some integer&#39;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;tan()&#39;</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Node.arcsin"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.arcsin">[docs]</a>    <span class="k">def</span> <span class="nf">arcsin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy arcsine operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :raises ValueError: The value of self is not in the function domain.</span>
+
+<span class="sd">        :return: A Node object after taking the arcsine of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x1 = Node(0.5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.arcsin(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v57, val=0.5235987755982988, der=1.1547005383792517, parent=[A Node object with index of v56, value of 0.5, derivative of 1, parent of [], and operator of [].], and op=[&#39;arcsin()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The value `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="si">}</span><span class="s2">` is not in the domain&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;arcsin()&#39;</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Node.arccos"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.arccos">[docs]</a>    <span class="k">def</span> <span class="nf">arccos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy arccosine operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :raises ValueError: The value of self is not in the function domain.</span>
+
+<span class="sd">        :return: A Node object after taking the arccosine of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(0.5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.arccos(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v59, val=1.0471975511965976, der=-1.1547005383792517, parent=[A Node object with index of v58, value of 0.5, derivative of 1, parent of [], and operator of [].], and op=[&#39;arccos()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The value `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="si">}</span><span class="s2">` is not in the domain&quot;</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;arccos()&#39;</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Node.arctan"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.arctan">[docs]</a>    <span class="k">def</span> <span class="nf">arctan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy arctangent operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after taking the arctangent of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(0.5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.arctan(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v61, val=0.46364760900080615, der=0.8, parent=[A Node object with index of v60, value of 0.5, derivative of 1, parent of [], and operator of [].], and op=[&#39;arctan()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;arctan()&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.sinh"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.sinh">[docs]</a>    <span class="k">def</span> <span class="nf">sinh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy sinh operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after taking the sinh of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(0.5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.sinh(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v63, val=0.5210953054937474, der=1.1276259652063807, parent=[A Node object with index of v62, value of 0.5, derivative of 1, parent of [], and operator of [].], and op=[&#39;sinh()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;sinh()&#39;</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Node.cosh"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.cosh">[docs]</a>    <span class="k">def</span> <span class="nf">cosh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy cosh operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after taking the cosh of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(0.5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.cosh(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v65, val=1.1276259652063807, der=0.5210953054937474, parent=[A Node object with index of v64, value of 0.5, derivative of 1, parent of [], and operator of [].], and op=[&#39;cosh()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;cosh()&#39;</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Node.tanh"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.tanh">[docs]</a>    <span class="k">def</span> <span class="nf">tanh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the numpy tanh operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :return: A Node object after taking the tanh of the current Node, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(0.5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = np.tanh(x1)</span>
+<span class="sd">        &gt;&gt;&gt; print(x2)</span>
+<span class="sd">        Node: vindex=v67, val=0.46211715726000974, der=0.7864477329659275, parent=[A Node object with index of v66, value of 0.5, derivative of 1, parent of [], and operator of [].], and op=[&#39;tanh()&#39;].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">derivative</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;tanh()&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.__radd__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__radd__">[docs]</a>    <span class="k">def</span> <span class="fm">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in reflective addition operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :param other: The integer or float to be added to the current Node object.</span>
+<span class="sd">        :type other: integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer or float).</span>
+
+<span class="sd">        :return: A Node object after reflective addition, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = 3</span>
+<span class="sd">        &gt;&gt;&gt; x21a = x2 + x1</span>
+<span class="sd">        &gt;&gt;&gt; print(x21a)</span>
+<span class="sd">        Node: vindex=v69, val=8, der=1, parent=[A Node object with index of v68, value of 5, derivative of 1, parent of [], and operator of [].], and op=[&#39;+&#39;, 3].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Node.__rsub__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__rsub__">[docs]</a>    <span class="k">def</span> <span class="fm">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in reflective subtraction operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :param other: The integer or float to be subtracted by the current Node object.</span>
+<span class="sd">        :type other: integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer or float).</span>
+
+<span class="sd">        :return: A Node object after reflective subtraction, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = 3</span>
+<span class="sd">        &gt;&gt;&gt; x3 = x1 - x2</span>
+<span class="sd">        &gt;&gt;&gt; print(x3)</span>
+<span class="sd">        Node: vindex=v71, val=2, der=1, parent=[A Node object with index of v70, value of 5, derivative of 1, parent of [], and operator of [].], and op=[&#39;-&#39;, 3].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="fm">__neg__</span><span class="p">()</span></div>
+        
+<div class="viewcode-block" id="Node.__rmul__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__rmul__">[docs]</a>    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in reflective multiplication operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :param other: The integer or float to multiply the current Node object by.</span>
+<span class="sd">        :type other: integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer or float).</span>
+
+<span class="sd">        :return: A Node object after reflective multiplication, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = 3</span>
+<span class="sd">        &gt;&gt;&gt; x21m = x2 * x1</span>
+<span class="sd">        &gt;&gt;&gt; print(x21m)</span>
+<span class="sd">        Node: vindex=v73, val=15, der=3, parent=[A Node object with index of v72, value of 5, derivative of 1, parent of [], and operator of [].], and op=[&#39;*&#39;, 3].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Node.__rtruediv__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__rtruediv__">[docs]</a>    <span class="k">def</span> <span class="fm">__rtruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in reflective true division operator for handling Dual numbers in the Node class </span>
+<span class="sd">        and returns a new Node object with value and derivative updated.</span>
+
+<span class="sd">        :param other: The integer or float to divide the current Node object by.</span>
+<span class="sd">        :type other: integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer or float).</span>
+
+<span class="sd">        :return: A Node object after reflective true division, with value and derivative updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = 2.5</span>
+<span class="sd">        &gt;&gt;&gt; x3 = x2 / x1</span>
+<span class="sd">        &gt;&gt;&gt; print(x3)</span>
+<span class="sd">        Node: vindex=v75, val=0.5, der=-0.1, parent=[A Node object with index of v74, value of 5, derivative of 1, parent of [], and operator of [].], and op=[&#39;r/&#39;, 2.5].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for division&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">other</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">derivative</span> <span class="o">=</span>  <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span> <span class="o">*</span> <span class="n">other</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;r/&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Node.__rpow__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__rpow__">[docs]</a>    <span class="k">def</span> <span class="fm">__rpow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in reflective power operator for handling Nodes in the forward pass</span>
+<span class="sd">        and returns a new Node object with value and parent updated. Raising the Node object </span>
+<span class="sd">        to the power of some integer or float is also supported.</span>
+
+<span class="sd">        :param other: The item to raise the reflective power of the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+
+<span class="sd">        :return: An Node object after take the power, with value and parent updated.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = 2.5</span>
+<span class="sd">        &gt;&gt;&gt; x3 = x2 ** x1</span>
+<span class="sd">        &gt;&gt;&gt; print(x3)</span>
+<span class="sd">        Node: vindex=v77, val=97.65625, der=89.48151678458547, parent=[A Node object with index of v76, value of 5, derivative of 1, parent of [], and operator of [].], and op=[&#39;rpow&#39;, 2.5].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for power&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">other</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span>
+            <span class="n">derivative</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">*</span> <span class="n">other</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">der</span>
+            <span class="k">return</span> <span class="n">Node</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">derivative</span><span class="p">)</span><span class="o">.</span><span class="n">update_node</span><span class="p">([</span><span class="bp">self</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;rpow&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Node.__lt__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__lt__">[docs]</a>    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in less than operator for comparisons between Nodes. </span>
+<span class="sd">        Comparing the Node object with some integer or float is also supported.</span>
+
+<span class="sd">        :param other: The item to be compared with the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+
+<span class="sd">        :return: A Boolean comparing the current Node object with other</span>
+<span class="sd">        :rtype: Boolean</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x1 &lt; x2</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for comparison &lt;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="Node.__gt__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__gt__">[docs]</a>    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in greater than operator for comparisons between Nodes. </span>
+<span class="sd">        Comparing the Node object with some integer or float is also supported.</span>
+
+<span class="sd">        :param other: The item to be compared with the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+
+<span class="sd">        :return: A Boolean comparing the current Node object with other</span>
+<span class="sd">        :rtype: Boolean</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 &gt; x1</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for comparison &gt;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&gt;</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="Node.__le__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__le__">[docs]</a>    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in less than or equal to operator for comparisons between Nodes. </span>
+<span class="sd">        Comparing the Node object with some integer or float is also supported.</span>
+
+<span class="sd">        :param other: The item to be compared with the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+
+<span class="sd">        :return: A Boolean comparing the current Node object with other</span>
+<span class="sd">        :rtype: Boolean</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x1 &lt;= x2</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for comparison &lt;=&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&lt;=</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="Node.__ge__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__ge__">[docs]</a>    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in greater than or equal to operator for comparisons between Nodes. </span>
+<span class="sd">        Comparing the Node object with some integer or float is also supported.</span>
+
+<span class="sd">        :param other: The item to be compared with the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+<span class="sd">        </span>
+<span class="sd">        :return: A Boolean comparing the current Node object with other</span>
+<span class="sd">        :rtype: Boolean</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; x1 = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x2 &gt;= x1</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&gt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for comparison &gt;=&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">&gt;=</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="Node.__eq__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in equal operator for comparisons between Nodes. Comparing the Node object </span>
+<span class="sd">        with some integer or float is also supported.</span>
+
+<span class="sd">        :param other: The item to be compared with the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+<span class="sd">        </span>
+<span class="sd">        :return: A Boolean comparing the current Node object with other</span>
+<span class="sd">        :rtype: Boolean</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x1 == x2</span>
+<span class="sd">        False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for comparison =&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">==</span> <span class="n">other</span></div>
+
+<div class="viewcode-block" id="Node.__ne__"><a class="viewcode-back" href="../../AutoDiff.html#AutoDiff.node.Node.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overloads the built-in not equal operator for comparisons between Nodes. Comparing the Node object </span>
+<span class="sd">        with some integer or float is also supported.</span>
+
+<span class="sd">        :param other: The item to be compared with the current Node object.</span>
+<span class="sd">        :type other: Node or integer or float</span>
+<span class="sd">        :raises TypeError: The type of other is unsupported (i.e., not integer, float, or Node type).</span>
+<span class="sd">        </span>
+<span class="sd">        :return: A Boolean comparing the current Node object with other</span>
+<span class="sd">        :rtype: Boolean</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = Node(3)</span>
+<span class="sd">        &gt;&gt;&gt; x2 = Node(5)</span>
+<span class="sd">        &gt;&gt;&gt; x1 != x2</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">val</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supported_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type `</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">` is not supported for comparison !=&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">!=</span> <span class="n">other</span></div></div>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, team01
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    </body>
+</html>

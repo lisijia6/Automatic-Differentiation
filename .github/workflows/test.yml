@@ -1,0 +1,22 @@
+name: test
+on: push
+
+jobs:
+  test_coverage:
+    name: Test AutoDiff
+    runs-on: ubuntu-latest
+    container:
+      image: 13052423200/autodiff:latest
+    steps:
+      # See: https://github.com/actions/checkout
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -U pytest pytest-cov
+          python3 -m pip install -r requirements.txt
+      - name: Run test suite
+        run: (cd test && ./run_test.sh)
