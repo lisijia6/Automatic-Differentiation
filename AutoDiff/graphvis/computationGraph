@@ -1,0 +1,48 @@
+graph {
+	rankdir=LR size="30, 30"
+	v4
+	v2
+	v2 -- v4 [label="-"]
+	v2
+	v1
+	v1 -- v2 [label="-"]
+	v1
+	"v-2"
+	"v-2" -- v1 [label="sin()"]
+	v2
+	"v-1"
+	"v-1" -- v2
+	v4
+	v3
+	v3 -- v4
+	v3
+	v0
+	3
+	v0 -- v3 [label="r/"]
+	3 -- v3
+	f1
+	v4 -- f1
+	v7
+	v6
+	v6 -- v7 [label="/"]
+	v6
+	v5
+	v5 -- v6 [label="*"]
+	v5
+	"v-1"
+	"v-1" -- v5 [label="cos()"]
+	v6
+	"v-2"
+	"v-2" -- v6
+	v7
+	v0
+	v0 -- v7
+	f2
+	v7 -- f2
+	x1
+	x1 -- "v-2"
+	x2
+	x2 -- "v-1"
+	x3
+	x3 -- v0
+}

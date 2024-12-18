@@ -1,0 +1,12 @@
+AutoDiff/__pycache__/*
+test/__pycache__/*
+.DS_Store
+.idea
+docs/build
+**/__pycache__/
+build
+*.egg-info/
+AutoDiff/optim/__pycache__/*
+.pytest_cache
+AutoDiff/graphvis/__pycache__/*
+docs/src/.ipynb_checkpoints/*

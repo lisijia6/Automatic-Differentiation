@@ -1,0 +1,36 @@
+name: Pages
+on:
+  push:
+    branches:
+    - main
+    - final_sphinx
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: 13052423200/autodiff:latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+#    - uses: actions/setup-python@v3
+    - name: echo
+      run: |
+        python3 -m pip list
+    - name: Install Python dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -U pytest pytest-cov
+        python3 -m pip install -r requirements.txt
+    - name: Generate test report and commit # generate reports to _static to be used by sphinx
+      run: |
+        python3 -m pytest --cov-report=html:docs/source/_static --cov=AutoDiff test/
+    - name: Build and Commit
+      uses: cnut1648/sphinx-pages@v2
+      with:
+        documentation_path: './docs/source'
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
